@@ -1,5 +1,6 @@
 // imports admin collection for accessing it here in the callbacks (controllers)
 const adminCollection = require('../models/adminModel');
+const userCollection = require('../models/userModel');
 
 // sets new admin into the database
 const setAdmin = async (req, res) => {
