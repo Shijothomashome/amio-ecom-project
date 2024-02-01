@@ -4,7 +4,12 @@ const validator = require('validator');
 
 
 const getSignup = (req, res) => {
-    res.render('signup');
+    try {
+        res.render('signup');
+    } catch (err) {
+        console.error(err);
+        res.status(500).render('500');
+    }
 }
 
 const postSignup = async (req, res) => {
@@ -12,9 +17,9 @@ const postSignup = async (req, res) => {
         const existingEmail = await userCollection.findOne({ email: req.body.email });
         const existingPhoneNumber = await userCollection.findOne({ phoneNumber: req.body.phoneNumber });
         if (existingEmail) {
-            res.render('signup', {message: 'Email is already registered!', class:'alert-danger', firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, password: req.body.password, rePassword: req.body.rePassword, EmailBorderColor: 'border-danger' });
+            res.render('signup', { message: 'Email is already registered!', class: 'alert-danger', firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, password: req.body.password, rePassword: req.body.rePassword, EmailBorderColor: 'border-danger' });
         } else if (existingPhoneNumber) {
-            res.render('signup', {message: 'Mobile number is already registered!', class:'alert-danger',  firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, password: req.body.password, rePassword: req.body.rePassword, MobileBorderColor: 'border-danger' });
+            res.render('signup', { message: 'Mobile number is already registered!', class: 'alert-danger', firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, password: req.body.password, rePassword: req.body.rePassword, MobileBorderColor: 'border-danger' });
         } else {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             req.body.password = hashedPassword;
@@ -25,19 +30,28 @@ const postSignup = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).render('500');
     }
 }
 
 
 
 const getLogin = (req, res) => {
-    if (req.session.accountCreated) {
-        res.render('login', { message: req.session.accountCreated, class: 'alert-success' });
-        delete req.session.accountCreated;
-    } else {
-        res.render('login');
+    try {
+        if (req.session.accountCreated) {
+            res.render('login', { message: req.session.accountCreated, class: 'alert-success' });
+            delete req.session.accountCreated;
+        } else {
+            res.render('login');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).render('500');
     }
+
+
+
+
 }
 
 const postLogin = async (req, res) => {
@@ -53,7 +67,7 @@ const postLogin = async (req, res) => {
                 res.redirect('/')
             }
         } else if (validator.isMobilePhone(req.body.emailOrPhone, 'any', { strictMode: false })) {
-            req.session.user = await userCollection.findOne({ phoneNumber: Number(req.body.emailOrPhone)});
+            req.session.user = await userCollection.findOne({ phoneNumber: Number(req.body.emailOrPhone) });
             if (req.session.user === null) { // will return null if no matches found
                 return res.render('login', { message: 'No user found, Try again!', class: 'alert-danger' })
             }
@@ -62,18 +76,34 @@ const postLogin = async (req, res) => {
                 req.session.loggedJustNow = true;
                 res.redirect('/')
             }
-        }else{
+        } else {
             return res.render('login', { message: 'No user found, Try again!', class: 'alert-danger' })
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).render('500');
     }
 }
+
+
+
+const getDashboard = (req, res) => {
+    try {
+        if (req.session.user) return res.render('dashboard', { heading: req.session.user.firstName, endPoint: '/user/dashboard', class: 'd-none' });
+        res.redirect('/user/login');
+    } catch (err) {
+        console.log(err);
+        res.status(500).render('500');
+    }
+}
+
+
+
 
 module.exports = {
     getSignup,
     postSignup,
     getLogin,
-    postLogin
+    postLogin,
+    getDashboard
 }

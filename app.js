@@ -4,6 +4,7 @@ const session = require('express-session');
 const { v4: uuidv4 } = require('uuid');
 const nocache = require('nocache');
 const connectDB = require('./db');
+const commonRoutes = require('./routes/commonRoutes.js')
 const adminRoutes = require('./routes/adminRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 
@@ -13,23 +14,27 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+
+
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(nocache());
+app.use('/',commonRoutes);
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 
-app.get('/', (req, res) => {
-    if(req.session.user && req.session.loggedJustNow){
-        req.session.loggedJustNow = false;
-        res.render('index',{loginSuccess: 'Login successful!'});
-    }
-    else if(req.session.user){
-        res.render('index', { heading: req.session.user.firstName, endPoint: '/user/profile', class: 'd-none' })
-    }else{
-        res.render('index',{class:'d-block'});
-    }
+// Global error handler middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('500');
+});
+
+
+// 404 not found
+app.use((req, res) => {
+    res.status(404).render('404')
 });
 
 connectDB();
