@@ -1,7 +1,6 @@
 
 <%- include('./partials/loginHeader') %>
-      
-    
+
         <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
                 <div class="container">
@@ -31,15 +30,13 @@
                     <div class="form-box">
                         <div class="form-tab">
                             <ul class="nav nav-pills nav-fill" role="tablist">
-                                
-                             
                                 <li class="nav-item">
                                    <h4>Sign In</h4> 
                                 </li>
                             </ul>
                             <div class="tab-content" id="tab-content-5">
                                 <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
-                                    <form action="/user/login" method="post">
+                                    <form action="/login" method="post">
                                         <div class="form-group">
                                             <label for="singin-email">Email address or Phone number *</label>
                                             <input type="text" class="form-control" id="singin-email" name="emailOrPhone" required>
@@ -81,8 +78,7 @@
                                             </div><!-- End .col-6 -->
                                         </div><!-- End .row -->
                                     </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                                
+                                </div><!-- .End .tab-pane -->                            
                             </div><!-- End .tab-content -->
                         </div><!-- End .form-tab -->
                     </div><!-- End .form-box -->

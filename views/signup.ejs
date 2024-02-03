@@ -1,112 +1,209 @@
-
 <%- include('./partials/signupHeader') %>
-      
-        <main class="main">
-            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
-                <div class="container">
-                    <ol class="breadcrumb position-relative ">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Login</li>
-                        
-                    </ol>
-                </div><!-- End .container -->
-            </nav><!-- End .breadcrumb-nav -->
 
-           
+    <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+            <div class="container">
+                <ol class="breadcrumb position-relative ">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Login</li>
 
-            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17 position-relative " style="background-image: url('/assets/images/backgrounds/login-bg.jpg')">
-                <% if(locals.message) { %> 
-                    <label id="alert-success" class="alert <%= locals.class %> position-absolute rounded p-2  " style="top:0; left: 0 !important; right: 0 !important; text-align: center;"><%= locals.message %> <a href="/user/login"  style="text-decoration: underline; color: #fff; font-weight: bold; background-color: #000;">Try Sign In?</a> </label>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+
+        <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17 position-relative "
+            style="background-image: url('/assets/images/backgrounds/login-bg.jpg')">
+            <% if(locals.message) { %>
+                <label id="alert-success" class="alert <%= locals.class %> position-absolute rounded p-2  "
+                    style="top:0; left: 0 !important; right: 0 !important; text-align: center;">
+                    <%= locals.message %> <a href="/login"
+                            style="text-decoration: underline; color: #fff; font-weight: bold; background-color: #000;">Try
+                            Sign In?</a>
+                </label>
                 <% } %>
-            	<div class="container">
-                    <div class="form-box">
-                        <div class="form-tab">
-                            <ul class="nav nav-pills nav-fill" role="tablist">
-                                <li class="nav-item">
-                                    <h4>Register</h4>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="tab-content-5">
-                                <div class="tab-pane active" id="register" role="tabpanel" aria-labelledby="register-tab">
-        
-                                    <form action="/user/signup" method="post">
-                                        <div class="form-group">
-                                            <label for="register-firstName">Your firstname *</label>
-                                            <input type="text" class="form-control" id="register-firstName" name="firstName"  value="<%= locals.firstName %>" required>
-                                        </div><!-- End .form-group -->
+                    <div class="container">
+                        <div class="form-box">
+                            <div class="form-tab">
+                                <ul class="nav nav-pills nav-fill" role="tablist">
+                                    <li class="nav-item">
+                                        <h4>Register</h4>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="tab-content-5">
+                                    <div class="tab-pane active" id="register" role="tabpanel"
+                                        aria-labelledby="register-tab">
 
-                                        <div class="form-group">
-                                            <label for="register-lastName">Your lastname *</label>
-                                            <input type="text" class="form-control" id="register-lastName" name="lastName" value="<%= locals.lastName %>"  required>
-                                        </div><!-- End .form-group -->
-        
-                                        <div class="form-group">
-                                            <label for="register-email">Your email address *</label>
-                                            <input type="email" class="form-control <%= locals.EmailBorderColor %>" id="register-email" name="email" value="<%= locals.email %>"  required>
-                                            <script>
-                                                let emailInput = document.getElementById('register-email');
-                                                emailInput.addEventListener('focus',() => {
-                                                    emailInput.style.setProperty('border-color', '#ddd', 'important');
-                                                })
-                                            </script>
-                                        </div><!-- End .form-group -->
-        
-                                        <div class="form-group">
-                                            <label for="register-phoneNumber">Your phone number*</label>
-                                            <input type="tel" class="form-control <%= locals.MobileBorderColor %>" id="register-phoneNumber" name="phoneNumber" value="<%= locals.phoneNumber %>"  required>
-                                            <script>
-                                                let phoneNumberInput = document.getElementById('register-phoneNumber');
-                                                phoneNumberInput.addEventListener('focus',() => {
-                                                    phoneNumberInput.style.setProperty('border-color', '#ddd', 'important');
-                                                })
-                                            </script>
-                                        </div><!-- End .form-group -->
-        
-                                        <div class="form-group">
-                                            <label for="register-password">Password *</label>
-                                            <input type="password" class="form-control" id="register-password" name="password" value="<%= locals.password %>"  required>
-                                        </div><!-- End .form-group -->
-        
-                                        <div class="form-group">
-                                            <label for="reEnter-password">Re-enter password *</label>
-                                            <input type="password" class="form-control" id="reEnter-password" name="rePassword" value="<%= locals.rePassword %>"  required>
-                                        </div><!-- End .form-group -->
-        
-                                        <div class="form-footer">
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>SIGN UP</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
-        
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="register-policy" required>
-                                                <label class="custom-control-label" for="register-policy">I agree to the <a href="#">privacy policy</a> *</label>
-                                            </div><!-- End .custom-checkbox -->
-                                        </div><!-- End .form-footer -->
-                                    </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login  btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                            </div><!-- End .tab-content -->
-                        </div><!-- End .form-tab -->
-                    </div><!-- End .form-box -->
-            	</div><!-- End .container -->
-            </div><!-- End .login-page section-bg -->
-        </main><!-- End .main -->
+                                        <form action="/signup" method="post">
+                                            <div class="form-group">
+                                                <label for="register-firstName">Your firstname *</label>
+                                                <input type="text" class="form-control signup-input"
+                                                    id="register-firstName" name="firstName"
+                                                    value="<%= locals.firstName %>">
+                                                <label class="error-label d-none text-danger"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
 
-<%- include('./partials/footer') %>
+                                            <div class="form-group">
+                                                <label for="register-lastName">Your lastname *</label>
+                                                <input type="text" class="form-control signup-input"
+                                                    id="register-lastName" name="lastName"
+                                                    value="<%= locals.lastName %>">
+                                                <label class="error-label d-none text-danger"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
+
+                                            <div class="form-group">
+                                                <label for="register-email">Your email address *</label>
+                                                <input type="text"
+                                                    class="form-control signup-input <%= locals.EmailBorderColor %>"
+                                                    id="register-email" name="email" value="<%= locals.email %>">
+                                                <label class="error-label d-none text-danger"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
+
+                                            <div class="form-group">
+                                                <label for="register-phoneNumber">Your phone number*</label>
+                                                <input type="tel"
+                                                    class="form-control signup-input <%= locals.MobileBorderColor %>"
+                                                    id="register-phoneNumber" name="phoneNumber"
+                                                    value="<%= locals.phoneNumber %>">
+                                                <label class="error-label d-none text-danger"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
+
+                                            <div class="form-group">
+                                                <label for="register-password">Password *</label>
+                                                <input type="password" class="form-control signup-input"
+                                                    id="register-password" name="password"
+                                                    value="<%= locals.password %>">
+                                                <label class="error-label d-none text-danger password-label"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
+
+                                            <div class="form-group">
+                                                <label for="reEnter-password">Re-enter password *</label>
+                                                <input type="password" class="form-control signup-input"
+                                                    id="reEnter-password" name="rePassword"
+                                                    value="<%= locals.rePassword %>">
+                                                <label class="error-label d-none text-danger"
+                                                    style="font-weight:500; font-size: 12px; margin: 0;"></label>
+                                            </div><!-- End .form-group -->
+
+                                            <div class="form-footer">
+                                                <button type="submit" class="btn-submit btn btn-outline-primary-2">
+                                                    <span>SIGN UP</span>
+                                                    <i class="icon-long-arrow-right"></i>
+                                                </button>
+
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="register-policy" required>
+                                                    <label class="custom-control-label" for="register-policy">I agree to
+                                                        the <a href="#">privacy policy</a> *</label>
+                                                </div><!-- End .custom-checkbox -->
+                                            </div><!-- End .form-footer -->
+                                        </form>
+
+                                        <script>
+                                            const error_labels = document.querySelectorAll('.error-label');
+                                            let inputs = document.querySelectorAll('.signup-input');
+
+                                            inputs.forEach((input, index) => {
+                                                input.addEventListener('focus', () => {
+                                                    input.style.setProperty('border-color', '#ebebeb', 'important');
+                                                    error_labels[index].classList.add('d-none');
+                                                });
+
+                                                input.addEventListener('focusout', () => {
+                                                    if (input.value.trim().length === 0) {
+                                                        input.style.setProperty('border-color', 'red', 'important');
+                                                        error_labels[index].textContent = '* This field is required'
+                                                        error_labels[index].classList.remove('d-none');
+                                                    } else if (input.name === 'firstName' && input.value.length <= 2) {
+                                                        input.style.setProperty('border-color', 'red', 'important');
+                                                        error_labels[index].classList.remove('d-none');
+                                                        error_labels[index].textContent = '* Minimum 2 characters required'
+                                                    } else if (input.name === 'email' && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(input.value.trim())) {
+                                                        input.style.setProperty('border-color', 'red', 'important');
+                                                        error_labels[index].classList.remove('d-none');
+                                                        error_labels[index].textContent = '*Enter a valid email'
+                                                    } else if (input.name === 'phoneNumber' && !/^[0-9]{10}$/.test(input.value.trim())) {
+                                                        input.style.setProperty('border-color', 'red', 'important');
+                                                        error_labels[index].classList.remove('d-none');
+                                                        error_labels[index].textContent = '*Enter valid phone number'
+                                                    } 
+                                                })
+                                            });
+
+                                            const password = document.getElementById('register-password');
+                                            const password_label = document.querySelector('.password-label');
+                                            password.addEventListener('input', () => {
+                                                if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{4,}$/.test(password.value.trim()) && (password.value.length >= 8)) {
+                                                    password_label.classList.remove('d-none');
+                                                    password_label.style.setProperty('color', '#4BB543', 'important');
+                                                    password.style.setProperty('border-color', '#4BB543', 'important');
+                                                    password_label.textContent = 'Password security is moderate!';
+                                                    if (password.value.length > 10) {
+                                                        password_label.textContent = 'Password highly secured!';
+                                                    }
+                                                } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{4,}$/.test(password.value.trim())) {
+                                                    password_label.classList.remove('d-none');
+                                                    password_label.style.setProperty('color', 'red', 'important');
+                                                    password.style.setProperty('border-color', 'red', 'important');
+                                                    password_label.textContent = '*Enter a strong password which includes, atleast one digit, one capital letter, one small letter and one special character ';
+                                                } else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{4,}$/.test(password.value.trim()) && password.value.length < 8 ) {
+                                                    password_label.textContent = '*Enter password with minimum 8 characters';
+                                                }
+                                            });
+
+                                            const btn = document.querySelector('.btn-submit');
+                                            btn.addEventListener('focusin', function (event) {
+                                                let isValid = true;
+                                                console.log('submit');
+                                                const error_labels = document.querySelectorAll('.error-label');
+                                                // Iterate over form fields
+                                                document.querySelectorAll('.signup-input').forEach(function (field, index) {
+                                                    // Trim the value to check if it's only spaces
+                                                    if (field.value.trim().length === 0) {
+                                                        // If the field is empty or contains only spaces, mark it as invalid
+                                                        console.log('no value');
+                                                        isValid = false;
+                                                        field.style.setProperty('border-color', 'red', 'important');
+                                                        error_labels[index].textContent = '* This field is required'
+                                                        error_labels[index].classList.remove('d-none');
+                                                    }
+                                                });
+                                                // Prevent form submission if not valid
+                                                if (!isValid) {
+                                                    event.preventDefault();
+                                                }
+                                            });
+                                        </script>
+
+
+                                        <div class="form-choice">
+                                            <p class="text-center">or sign in with</p>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <a href="#" class="btn btn-login btn-g">
+                                                        <i class="icon-google"></i>
+                                                        Login With Google
+                                                    </a>
+                                                </div><!-- End .col-6 -->
+                                                <div class="col-sm-6">
+                                                    <a href="#" class="btn btn-login  btn-f">
+                                                        <i class="icon-facebook-f"></i>
+                                                        Login With Facebook
+                                                    </a>
+                                                </div><!-- End .col-6 -->
+                                            </div><!-- End .row -->
+                                        </div><!-- End .form-choice -->
+                                    </div><!-- .End .tab-pane -->
+                                </div><!-- End .tab-content -->
+                            </div><!-- End .form-tab -->
+                        </div><!-- End .form-box -->
+                    </div><!-- End .container -->
+        </div><!-- End .login-page section-bg -->
+    </main><!-- End .main -->
+
+    <%- include('./partials/footer') %>

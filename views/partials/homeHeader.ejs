@@ -102,13 +102,14 @@
                                 <ul>
                                     <li><a href="wishlist.html"><i class="icon-heart-o"></i>My Wishlist <span>(3)</span></a>
                                     </li>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                    <% if (locals.endPoint) { %>
-                                        <li ><a href="<%= locals.endPoint %>"><i class="icon-user"></i><%= locals.heading %></a></li>
+                                    <% if (locals.sessionUser) { %>
+                                        <li ><a href="<%= locals.endPoint %>"><i class="icon-user"></i><%= locals.sessionUser %></a></li>
                                     <% } %>
-                                        <li class="<%= locals.class %>"><a href="/user/login"><i class="icon-user"></i>Login</a></li>
-                                        <li class="<%= locals.class %>"><a href="/user/signup"><i class="icon-user"></i>Signup</a></li>
+                                        <li class="<%= locals.class %>"><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                        <li class="<%= locals.class %>"><a href="/signup"><i class="icon-user"></i>Signup</a></li>
+                                    <% if (locals.sessionUser) { %>
+                                        <li ><a href="/logout"><i class="icon-user"></i>Logout</a></li>
+                                    <% } %>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->

@@ -9938,7 +9938,7 @@ select.form-control:not([size]):not([multiple]) {
 .form-control:focus {
     color: #777;
     background-color: #fff;
-    border-color: #c96;
+    border: 1px solid #ebebeb!important;
     box-shadow: none;
     outline: none !important
 }

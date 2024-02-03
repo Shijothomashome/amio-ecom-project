@@ -6,7 +6,6 @@ const nocache = require('nocache');
 const connectDB = require('./db');
 const commonRoutes = require('./routes/commonRoutes.js')
 const adminRoutes = require('./routes/adminRoutes.js');
-const userRoutes = require('./routes/userRoutes.js');
 
 app.set('view engine', 'ejs');
 app.use(session({
@@ -15,15 +14,12 @@ app.use(session({
     saveUninitialized: true
 }));
 
-
-
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(nocache());
 app.use('/',commonRoutes);
 app.use('/admin', adminRoutes);
-app.use('/user', userRoutes);
 
 // Global error handler middleware
 app.use((err, req, res, next) => {
