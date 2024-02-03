@@ -85,7 +85,7 @@
                                                 <input type="password" class="form-control signup-input"
                                                     id="reEnter-password" name="rePassword"
                                                     value="<%= locals.rePassword %>">
-                                                <label class="error-label d-none text-danger"
+                                                <label class="error-label d-none text-danger re-password-label"
                                                     style="font-weight:500; font-size: 12px; margin: 0;"></label>
                                             </div><!-- End .form-group -->
 
@@ -104,6 +104,9 @@
                                             </div><!-- End .form-footer -->
                                         </form>
 
+
+
+                                        <!-- Signup Form Client-side validation using pure javascript  -->
                                         <script>
                                             const error_labels = document.querySelectorAll('.error-label');
                                             let inputs = document.querySelectorAll('.signup-input');
@@ -131,10 +134,11 @@
                                                         input.style.setProperty('border-color', 'red', 'important');
                                                         error_labels[index].classList.remove('d-none');
                                                         error_labels[index].textContent = '*Enter valid phone number'
-                                                    } 
+                                                    }
                                                 })
                                             });
 
+                                            // Strong Password setup 
                                             const password = document.getElementById('register-password');
                                             const password_label = document.querySelector('.password-label');
                                             password.addEventListener('input', () => {
@@ -151,26 +155,49 @@
                                                     password_label.style.setProperty('color', 'red', 'important');
                                                     password.style.setProperty('border-color', 'red', 'important');
                                                     password_label.textContent = '*Enter a strong password which includes, atleast one digit, one capital letter, one small letter and one special character ';
-                                                } else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{4,}$/.test(password.value.trim()) && password.value.length < 8 ) {
+                                                } else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{4,}$/.test(password.value.trim()) && password.value.length < 8) {
                                                     password_label.textContent = '*Enter password with minimum 8 characters';
                                                 }
                                             });
 
+                                            // Passwords match or not
+                                            const rePassword = document.getElementById('reEnter-password');
+                                            const re_password_label = document.querySelector('.re-password-label');
+                                            rePassword.addEventListener('input', () => {
+                                                const passwordMatch = rePassword.value.trim() === password.value.trim();
+                                                if (password.value.trim().length > 1) {
+                                                    if (passwordMatch) {
+                                                        re_password_label.style.setProperty('color', '#4BB543', 'important');
+                                                        re_password_label.textContent = 'Passwords match';
+                                                        re_password_label.classList.remove('d-none');
+                                                    } else {
+                                                        re_password_label.style.setProperty('color', 'red', 'important');
+                                                        re_password_label.textContent = 'Passwords do not match';
+                                                        re_password_label.classList.remove('d-none');
+                                                    }
+                                                }
+                                            })
+
+
                                             const btn = document.querySelector('.btn-submit');
-                                            btn.addEventListener('focusin', function (event) {
+                                            btn.addEventListener('click', function (event) {
                                                 let isValid = true;
-                                                console.log('submit');
                                                 const error_labels = document.querySelectorAll('.error-label');
+                                                const passwordMatch = rePassword.value.trim() === password.value.trim();
                                                 // Iterate over form fields
                                                 document.querySelectorAll('.signup-input').forEach(function (field, index) {
                                                     // Trim the value to check if it's only spaces
                                                     if (field.value.trim().length === 0) {
                                                         // If the field is empty or contains only spaces, mark it as invalid
-                                                        console.log('no value');
                                                         isValid = false;
                                                         field.style.setProperty('border-color', 'red', 'important');
                                                         error_labels[index].textContent = '* This field is required'
                                                         error_labels[index].classList.remove('d-none');
+                                                    }else if(!passwordMatch){
+                                                        re_password_label.style.setProperty('color', 'red', 'important');
+                                                        re_password_label.textContent = 'Passwords do not match';
+                                                        re_password_label.classList.remove('d-none');
+                                                        isValid = false;
                                                     }
                                                 });
                                                 // Prevent form submission if not valid
