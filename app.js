@@ -21,6 +21,13 @@ app.use(nocache());
 app.use('/',commonRoutes);
 app.use('/admin', adminRoutes);
 
+// Tester
+app.use('/tester', (req, res) => {
+    res.render('OTP');
+})
+
+
+
 // Global error handler middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

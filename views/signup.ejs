@@ -116,8 +116,6 @@
                                             </div><!-- End .form-footer -->
                                         </form>
 
-
-
                                         <!-- Signup Form Client-side validation using pure javascript  -->
                                         <script>
 
@@ -133,20 +131,20 @@
                                                 input.addEventListener('focusout', () => {
                                                     if (input.value.trim().length === 0) {
                                                         input.style.setProperty('border-color', 'red', 'important');
-                                                        error_labels[index].textContent = '* This field is required'
+                                                        error_labels[index].textContent = '* This field is required!'
                                                         error_labels[index].classList.remove('d-none');
                                                     } else if (input.name === 'firstName' && input.value.length <= 2) {
                                                         input.style.setProperty('border-color', 'red', 'important');
                                                         error_labels[index].classList.remove('d-none');
-                                                        error_labels[index].textContent = '* Minimum 2 characters required'
+                                                        error_labels[index].textContent = '* Minimum 2 characters required!'
                                                     } else if (input.name === 'email' && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(input.value.trim())) {
                                                         input.style.setProperty('border-color', 'red', 'important');
                                                         error_labels[index].classList.remove('d-none');
-                                                        error_labels[index].textContent = '*Enter a valid email'
+                                                        error_labels[index].textContent = '*Enter a valid email!'
                                                     } else if (input.name === 'phoneNumber' && !/^[0-9]{10}$/.test(input.value.trim())) {
                                                         input.style.setProperty('border-color', 'red', 'important');
                                                         error_labels[index].classList.remove('d-none');
-                                                        error_labels[index].textContent = '*Enter valid phone number'
+                                                        error_labels[index].textContent = '*Enter valid phone number!'
                                                     }
                                                 })
                                             });
@@ -161,7 +159,64 @@
                                             const one_special_char_label = document.querySelector('.one-special-char-label');
                                             const eight_char_label = document.querySelector('.eight-char-label');
 
-                                            
+                                            // Defining a function to check all password conditions individually
+                                            function evaluatePasswordStrength() {
+                                                // capital letter
+                                                if (/^(?=.*[A-Z])/.test(password.value)) {
+                                                    one_capital_letter_label.style.setProperty('color', '#4BB543', 'important');
+                                                    one_capital_letter_label.textContent = 'One capital letter! \u2705'
+                                                    one_capital_letter_label.classList.remove('d-none');
+                                                } else {
+                                                    one_capital_letter_label.style.setProperty('color', 'red', 'important');
+                                                    one_capital_letter_label.textContent = 'One capital letter! \u274C';
+                                                    one_capital_letter_label.classList.remove('d-none');
+                                                }
+
+                                                // small letter
+                                                if (/^(?=.*[a-z])/.test(password.value)) {
+                                                    one_small_letter_label.style.setProperty('color', '#4BB543', 'important');
+                                                    one_small_letter_label.textContent = 'One small letter! \u2705';
+                                                    one_small_letter_label.classList.remove('d-none');
+                                                } else {
+                                                    one_small_letter_label.style.setProperty('color', 'red', 'important');
+                                                    one_small_letter_label.textContent = 'One small letter! \u274C';
+                                                    one_small_letter_label.classList.remove('d-none');
+                                                }
+
+                                                // one digit
+                                                if (/^(?=.*\d)/.test(password.value)) {
+                                                    one_digit_label.style.setProperty('color', '#4BB543', 'important');
+                                                    one_digit_label.textContent = 'One number! \u2705';
+                                                    one_digit_label.classList.remove('d-none');
+                                                } else {
+                                                    one_digit_label.style.setProperty('color', 'red', 'important');
+                                                    one_digit_label.textContent = 'One number! \u274C';
+                                                    one_digit_label.classList.remove('d-none');
+                                                }
+
+                                                // one special character
+                                                if (/^(?=.*[!@#$%^&*()_-])/.test(password.value)) {
+                                                    one_special_char_label.style.setProperty('color', '#4BB543', 'important');
+                                                    one_special_char_label.textContent = 'One special character! \u2705';
+                                                    one_special_char_label.classList.remove('d-none');
+                                                } else {
+                                                    one_special_char_label.style.setProperty('color', 'red', 'important');
+                                                    one_special_char_label.textContent = 'One special character! \u274C';
+                                                    one_special_char_label.classList.remove('d-none');
+                                                }
+
+                                                // atleast eight characters long
+                                                if (password.value.length >= 8) {
+                                                    eight_char_label.style.setProperty('color', '#4BB543', 'important');
+                                                    eight_char_label.textContent = 'Minimum eight characters! \u2705';
+                                                    eight_char_label.classList.remove('d-none');
+                                                } else {
+                                                    eight_char_label.style.setProperty('color', 'red', 'important');
+                                                    eight_char_label.textContent = 'Minimum eight characters! \u274C';
+                                                    eight_char_label.classList.remove('d-none');
+                                                }
+                                            }
+
 
                                             password.addEventListener('input', () => {
                                                 if (password.value.includes(' ')) {
@@ -187,144 +242,40 @@
                                                             password.style.setProperty('border-color', '#4BB543', 'important');
 
 
-                                                            // For dynamically checking and displaying error of password mismatch from the password field to repassword error label
-                                                            // To understand, remove if and else if from below and set a matching password on password and repassword inputs then remove password from password input, then the 'password match' alert won't go from repassword label
-                                                            // So password match condition for repassword label should work from password input field also (exception --> spaces only)
-                                                            const passwordMatch = rePassword.value === password.value;
-                                                            if (!passwordMatch && rePassword.value.length > 0) {
-                                                                re_password_label.style.setProperty('color', 'red', 'important');
-                                                                re_password_label.textContent = 'Passwords do not match';
-                                                                re_password_label.classList.remove('d-none');
-                                                            } else if (passwordMatch) {
-                                                                re_password_label.style.setProperty('color', '#4BB543', 'important');
-                                                                re_password_label.textContent = 'Passwords match';
-                                                                re_password_label.classList.remove('d-none');
-                                                            }
                                                         }
 
-                                                        // capital letter
-                                                        if (/^(?=.*[A-Z])/.test(password.value)) {
-                                                            one_capital_letter_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_capital_letter_label.textContent = 'One capital letter! \u2705'
-                                                            one_capital_letter_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_capital_letter_label.style.setProperty('color', 'red', 'important');
-                                                            one_capital_letter_label.textContent = 'One capital letter! \u274C';
-                                                            one_capital_letter_label.classList.remove('d-none');
-                                                        }
-
-                                                        // small letter
-                                                        if (/^(?=.*[a-z])/.test(password.value)) {
-                                                            one_small_letter_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_small_letter_label.textContent = 'One small letter! \u2705';
-                                                            one_small_letter_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_small_letter_label.style.setProperty('color', 'red', 'important');
-                                                            one_small_letter_label.textContent = 'One small letter! \u274C';
-                                                            one_small_letter_label.classList.remove('d-none');
-                                                        }
-
-                                                        // one digit
-                                                        if (/^(?=.*\d)/.test(password.value)) {
-                                                            one_digit_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_digit_label.textContent = 'One number! \u2705';
-                                                            one_digit_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_digit_label.style.setProperty('color', 'red', 'important');
-                                                            one_digit_label.textContent = 'One number! \u274C';
-                                                            one_digit_label.classList.remove('d-none');
-                                                        }
-
-                                                        // one special character
-                                                        if (/^(?=.*[!@#$%^&*()_-])/.test(password.value)) {
-                                                            one_special_char_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_special_char_label.textContent = 'One special character! \u2705';
-                                                            one_special_char_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_special_char_label.style.setProperty('color', 'red', 'important');
-                                                            one_special_char_label.textContent = 'One special character! \u274C';
-                                                            one_special_char_label.classList.remove('d-none');
-                                                        }
-
-                                                        // atleast eight characters long
-                                                        if (password.value.length >= 8) {
-                                                            eight_char_label.style.setProperty('color', '#4BB543', 'important');
-                                                            eight_char_label.textContent = 'Minimum eight characters! \u2705';
-                                                            eight_char_label.classList.remove('d-none');
-                                                        }else{
-                                                            eight_char_label.style.setProperty('color', 'red', 'important');
-                                                            eight_char_label.textContent = 'Minimum eight characters! \u274C';
-                                                            eight_char_label.classList.remove('d-none');
-                                                        }
-
+                                                        evaluatePasswordStrength();
 
                                                     } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-])[A-Za-z\d!@#$%^&*()_-]{8,}$/.test(password.value)) {
 
                                                         password_security_label.classList.add('d-none');
                                                         password.style.setProperty('border-color', 'red', 'important');
 
-
-                                                        // capital letter
-                                                        if (/^(?=.*[A-Z])/.test(password.value)) {
-                                                            one_capital_letter_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_capital_letter_label.textContent = 'One capital letter! \u2705'
-                                                            one_capital_letter_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_capital_letter_label.style.setProperty('color', 'red', 'important');
-                                                            one_capital_letter_label.textContent = 'One capital letter! \u274C';
-                                                            one_capital_letter_label.classList.remove('d-none');
-                                                        }
-
-                                                        // small letter
-                                                        if (/^(?=.*[a-z])/.test(password.value)) {
-                                                            one_small_letter_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_small_letter_label.textContent = 'One small letter! \u2705';
-                                                            one_small_letter_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_small_letter_label.style.setProperty('color', 'red', 'important');
-                                                            one_small_letter_label.textContent = 'One small letter! \u274C';
-                                                            one_small_letter_label.classList.remove('d-none');
-                                                        }
-
-                                                        // one digit
-                                                        if (/^(?=.*\d)/.test(password.value)) {
-                                                            one_digit_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_digit_label.textContent = 'One number! \u2705';
-                                                            one_digit_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_digit_label.style.setProperty('color', 'red', 'important');
-                                                            one_digit_label.textContent = 'One number! \u274C';
-                                                            one_digit_label.classList.remove('d-none');
-                                                        }
-
-                                                        // one special character
-                                                        if (/^(?=.*[!@#$%^&*()_-])/.test(password.value)) {
-                                                            one_special_char_label.style.setProperty('color', '#4BB543', 'important');
-                                                            one_special_char_label.textContent = 'One special character! \u2705';
-                                                            one_special_char_label.classList.remove('d-none');
-                                                        } else {
-                                                            one_special_char_label.style.setProperty('color', 'red', 'important');
-                                                            one_special_char_label.textContent = 'One special character! \u274C';
-                                                            one_special_char_label.classList.remove('d-none');
-                                                        }
-
-                                                        // atleast eight characters long
-                                                        if (password.value.length >= 8) {
-                                                            eight_char_label.style.setProperty('color', '#4BB543', 'important');
-                                                            eight_char_label.textContent = 'Minimum eight characters! \u274C';
-                                                            eight_char_label.classList.remove('d-none');
-                                                        }else{
-                                                            eight_char_label.style.setProperty('color', 'red', 'important');
-                                                            eight_char_label.textContent = 'Minimum eight characters! \u274C';
-                                                            eight_char_label.classList.remove('d-none');
-                                                        }
-
-
+                                                        evaluatePasswordStrength();
                                                     }
                                                 }
                                             });
 
-                                            // Passwords match or not
+
+
+
+                                            // Passwords match or not [from password.addEventListener to repassword label]
+                                            // For dynamically checking and displaying error of password mismatch from the password field to repassword error label
+                                            // (exception --> spaces only)
+                                            password.addEventListener('input', () => {
+                                            const passwordMatch = rePassword.value === password.value;
+                                            if (!passwordMatch && rePassword.value.length > 0) {
+                                                re_password_label.style.setProperty('color', 'red', 'important');
+                                                re_password_label.textContent = 'Passwords do not match!';
+                                                re_password_label.classList.remove('d-none');
+                                            } else if (passwordMatch && password.value.length > 0) {
+                                                re_password_label.style.setProperty('color', '#4BB543', 'important');
+                                                re_password_label.textContent = 'Passwords match!';
+                                                re_password_label.classList.remove('d-none');
+                                            }
+                                        })
+
+                                            // Passwords match or not [from repassword.addEventListener to repassword label]
                                             const rePassword = document.getElementById('reEnter-password');
                                             const re_password_label = document.querySelector('.re-password-label');
                                             rePassword.addEventListener('input', () => {
@@ -332,11 +283,11 @@
                                                 if (password.value.length > 1) {
                                                     if (passwordMatch) {
                                                         re_password_label.style.setProperty('color', '#4BB543', 'important');
-                                                        re_password_label.textContent = 'Passwords match';
+                                                        re_password_label.textContent = 'Passwords match!';
                                                         re_password_label.classList.remove('d-none');
                                                     } else {
                                                         re_password_label.style.setProperty('color', 'red', 'important');
-                                                        re_password_label.textContent = 'Passwords do not match';
+                                                        re_password_label.textContent = 'Passwords do not match!';
                                                         re_password_label.classList.remove('d-none');
                                                     }
                                                 }
@@ -355,12 +306,12 @@
                                                     if (field.value.trim().length === 0) {
                                                         // If the field is empty or contains only spaces, mark it as invalid
                                                         field.style.setProperty('border-color', 'red', 'important');
-                                                        error_labels[index].textContent = '* This field is required'
+                                                        error_labels[index].textContent = '* This field is required!'
                                                         error_labels[index].classList.remove('d-none');
                                                         isValid = false;
                                                     } else if (!passwordMatch) {
                                                         re_password_label.style.setProperty('color', 'red', 'important');
-                                                        re_password_label.textContent = 'Passwords do not match';
+                                                        re_password_label.textContent = 'Passwords do not match!';
                                                         re_password_label.classList.remove('d-none');
                                                         isValid = false;
                                                     } else if (password.value.includes(' ')) {

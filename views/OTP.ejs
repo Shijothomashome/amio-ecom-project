@@ -1,0 +1,130 @@
+<%- include('./partials/otpHeader') %>
+
+    <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+            <div class="container">
+                <ol class="breadcrumb position-relative ">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Login</li>
+
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+
+        <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17 position-relative "
+            style="background-image: url('/assets/images/backgrounds/login-bg.jpg')">
+            <% if(locals.message) { %>
+                <label id="alert-success" class="alert <%= locals.class %> position-absolute rounded p-2  "
+                    style="top:0; left: 0 !important; right: 0 !important; text-align: center;">
+                    <%= locals.message %> <a href="/login"
+                            style="text-decoration: underline; color: #fff; font-weight: bold; background-color: #000;">Try
+                            Sign In?</a>
+                </label>
+                <% } %>
+                <div class="container">
+                    <div class="form-box">
+                        <div class="form-tab">
+                            <ul class="nav nav-pills nav-fill" role="tablist">
+                                <li class="nav-item">
+                                    <h4>Enter OTP</h4>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="tab-content-5">
+                                <div class="tab-pane active" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                    <form id="otpForm" action="/auth">
+                                        <div class="form-group">
+                                            <label style="font-size: 12px;">A 6-digit OTP has been sent to your registered email. <br> </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="otpInput" name="otp">
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-dark " id="resendOtp">Resend OTP</button>
+                                                </div>
+                                            </div>
+                                            <label class="d-none text-danger otp-label" style="font-weight: 500; font-size: 12px; margin: 0;"></label>
+                                            <small class="form-text text-muted mt-1 text-primary " id="timeRemaining">Time remaining: <span id="timer">30</span> seconds</small>
+                                        </div>
+                                        <button type="submit" class="otp-btn btn btn-dark w-100">Submit</button>
+                                    </form>
+                                </div><!-- .End .tab-pane -->
+                            </div><!-- End .tab-content -->
+                        </div><!-- End .form-tab -->
+                    </div><!-- End .form-box -->
+                </div><!-- End .container -->
+                
+                <script>
+                    const otpInput = document.getElementById("otpInput");
+                    const otpBtn = document.querySelector('.otp-btn');
+                    const otpInput_label = document.querySelector('.otp-label');
+                    const resendOtpBtn = document.getElementById('resendOtp');
+                    const timeRemaining = document.getElementById('timeRemaining');
+                    let timer = 30; // Set initial timer value in seconds
+                
+                    otpInput.addEventListener("input", function () {
+                        let inputValue = this.value;
+                
+                        // Remove non-numeric characters
+                        inputValue = inputValue.replace(/[^0-9]/g, '');
+                
+                        // Limit the length to 6 characters
+                        inputValue = inputValue.substring(0, 6);
+                
+                        // Update the input value
+                        this.value = inputValue;
+                    });
+                
+                    otpBtn.addEventListener('click', (event) => {
+                        if (otpInput.value.length === 0) {
+                            showError('*Field is empty!');
+                            event.preventDefault();
+                        } else if (otpInput.value.length < 6) {
+                            showError('*Enter the full OTP!');
+                            event.preventDefault();
+                        } else {
+                            hideError();
+                        }
+                    });
+                
+                    resendOtpBtn.addEventListener('click', () => {
+                        // Perform logic to resend OTP (you can reset timer here if needed)
+                        resetTimer();
+                    });
+                
+                    // Timer function
+                    function startTimer() {
+                        const timerElement = document.getElementById('timer');
+                        const countdown = setInterval(() => {
+                            timerElement.textContent = timer;
+                
+                            if (timer === 0) {
+                                clearInterval(countdown);
+                                resendOtpBtn.disabled = false; // Enable the Resend OTP button
+                            } else {
+                                timer--;
+                            }
+                        }, 1000);
+                    }
+                
+                    function resetTimer() {
+                        timer = 30; // Reset the timer value
+                        resendOtpBtn.disabled = true; // Disable the Resend OTP button initially
+                        startTimer();
+                    }
+                
+                    // Initial timer start
+                    resetTimer();
+                
+                    function showError(message) {
+                        otpInput_label.classList.remove('d-none');
+                        otpInput_label.textContent = message;
+                    }
+                
+                    function hideError() {
+                        otpInput_label.classList.add('d-none');
+                    }
+                </script>
+                
+        </div>
+    </main><!-- End .main -->
+
+
+    <%- include('./partials/footer') %>

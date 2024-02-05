@@ -7,7 +7,7 @@ router.post('/signup',commonControllers.postSignup)
 router.get('/login',commonControllers.getLogin);
 router.post('/login',commonControllers.postLogin);
 router.get('/dashboard',commonControllers.getDashboard);
-router.post('/logout',commonControllers.getLogout);
+router.get('/logout',commonControllers.getLogout);
 
 router.get('/', commonControllers.getHome);
 router.get('/about',commonControllers.getAbout);
