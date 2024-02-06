@@ -23,7 +23,7 @@ app.use('/admin', adminRoutes);
 
 // Tester
 app.use('/tester', (req, res) => {
-    res.render('OTP');
+    res.render('forgotPasswordReset');
 })
 
 
