@@ -274,6 +274,8 @@ const getLogout = (req, res) => {
 
 
 // password reset
+
+// "07-02-2024 10:53 PM OTP PERFECTION CHECKED TWO TABS OPEN TWO USERS AT THE SAME TIME FOR SIGNUP AND RESET PASSWORD OTP. successfully done signup otp and reset password otp. but signup otp passing is more perfect using if and 2 else if. But reset password otp is working perfectly fine. there is no error in it but when i check using two tabs open(two emails at the same time) it sends otp again before completing 30 seconds of time. When i get free time Will try to update reset otp section as same as signup otp 3loops(if,else if, else if) "
 const getForgotPasswordEmailAsk = (req, res) => {
     try {
         if (req.session.errorMessage) {
@@ -300,7 +302,7 @@ const postForgotPasswordEmailAsk = async (req, res) => {
                 req.session.forgotUsers = [];
                 req.session.forgotUserIndex = req.session.forgotUsers.length - 1;
             }
-           
+
             let currentTime = 30 - Math.floor((Date.now() - req.session.emailSendTime) / 1000);
 
             if (!req.session.emailSendTime || currentTime <= 0 || req.session.forgotUsers[req.session.forgotUserIndex].email !== req.session.forgotUser.email) {
@@ -317,7 +319,7 @@ const postForgotPasswordEmailAsk = async (req, res) => {
             res.redirect(`/forgot-password-otp/${req.session.forgotUserIndex}`);
 
         }
-       
+
 
 
     } catch (err) {
@@ -387,7 +389,7 @@ const getForgotPasswordReset = (req, res) => {
         if (req.session.authentification) {
             const text = req.session.authentification;
             delete req.session.authentification;
-            res.render('./common/forgotPasswordReset', { message: text, class: 'alert-success', index});
+            res.render('./common/forgotPasswordReset', { message: text, class: 'alert-success', index });
         } else {
             console.log(err);
             res.status(500).render('./common/500');
@@ -398,9 +400,6 @@ const getForgotPasswordReset = (req, res) => {
         res.status(500).render('./common/500');
     }
 }
-
-
-
 
 
 const postForgotPasswordReset = async (req, res) => {
