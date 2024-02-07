@@ -1,6 +1,15 @@
-<%- include('./partials/otpHeader') %>
+<%- include('../partials/otpHeader') %>
 
     <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+            <div class="container">
+                <ol class="breadcrumb position-relative ">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Login</li>
+
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
 
         <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17 position-relative "
             style="background-image: url('/assets/images/backgrounds/login-bg.jpg')">
@@ -23,13 +32,14 @@
                                 <div class="tab-content" id="tab-content-5">
                                     <div class="tab-pane active" id="register" role="tabpanel"
                                         aria-labelledby="register-tab">
-                                        <form id="otpForm" action="/forgot-password-otp" method="post">
+                                        <form id="otpForm" action="/signup-otp/<%= locals.index %>" method="post">
                                             <div class="form-group">
-                                                <label style="font-size: 12px;">To continue, complete this verification step. We've sent an OTP to the email <%= locals.email%>. Please enter it below to complete verification. <br> </label>
+                                                <label style="font-size: 12px;">A 6-digit OTP has been sent to your
+                                                    registered email. <br> </label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="otpInput" name="otp">
                                                     <div class="input-group-append">
-                                                        <a href="/password-reset-resend-otp"><button type="button"
+                                                        <a href="/resend-otp/<%= locals.index %>"><button type="button"
                                                                 class="btn btn-dark " id="resendOtp" disabled >Resend
                                                                 OTP</button></a>
                                                     </div>
@@ -123,4 +133,4 @@
     </main><!-- End .main -->
 
 
-    <%- include('./partials/footer') %>
+    <%- include('../partials/footer') %>

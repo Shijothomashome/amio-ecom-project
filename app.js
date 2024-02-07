@@ -23,7 +23,7 @@ app.use('/admin', adminRoutes);
 
 // Tester
 app.use('/tester', (req, res) => {
-    res.render('forgotPasswordReset');
+    res.render('./common/forgotPasswordReset');
 })
 
 
@@ -31,13 +31,13 @@ app.use('/tester', (req, res) => {
 // Global error handler middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).render('500');
+    res.status(500).render('./common/500');
 });
 
 
 // 404 not found
 app.use((req, res) => {
-    res.status(404).render('404')
+    res.status(404).render('./common/404')
 });
 
 connectDB();
