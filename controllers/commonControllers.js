@@ -54,49 +54,29 @@ const postSignup = async (req, res) => {
         } else if (existingPhoneNumber) {
             res.render('./common/signup', { message: 'Mobile number is already registered!', class: 'alert-danger', firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, password: req.body.password, rePassword: req.body.rePassword, MobileBorderColor: 'border-danger' });
         } else {
+            // Below logic is very perfect which will allow unique sessions for evey user(because no one is logged in -- for that we used array session variables )
             req.session.currentUser = req.body;
-
-
-            if (req.session.tempUsers && req.session.tempUsers[req.session.index].email === req.session.currentUser.email) {
-                console.log('===');
-                console.log(req.session.tempUsers[req.session.index]);
-                console.log(req.session.currentUser);
-
-                req.session.tempUsers.push(req.session.currentUser);
-                req.session.index = req.session.tempUsers.length - 1;
-                let currentTime = 30 - Math.floor((Date.now() - req.session.emailSendTime) / 1000);
-                if (!req.session.emailSendTime || currentTime <= 0) {
-                    req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-                    sendEmail(req.session.tempUsers[req.session.index], 'verification', req.session.OTP);
-                    req.session.emailSendTime = Date.now();
-                }
-                res.redirect(`/signup-otp/${req.session.index}`);
-            }
-            else if (req.session.tempUsers && req.session.tempUsers[req.session.index].email !== req.session.currentUser.email) {
-                console.log('!==');
-                console.log(req.session.tempUsers[req.session.index]);
-                console.log(req.session.currentUser);
-
-                req.session.tempUsers.push(req.session.currentUser);
-                req.session.index = req.session.tempUsers.length - 1;
-                req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-                sendEmail(req.session.tempUsers[req.session.index], 'verification', req.session.OTP);
-                req.session.emailSendTime = Date.now();
-                res.redirect(`/signup-otp/${req.session.index}`);
-            } else if (!req.session.tempusers) {
-                console.log('no temp user')
-                console.log(req.session.currentUser);
+            if (!req.session.tempUsers) {
                 req.session.tempUsers = [];
+                req.session.OTPs = [];
+                req.session.emailSendTimes = []
+                req.session.emails = [];
+            }
+
+            let currentTime = 30 - Math.floor((Date.now() - req.session.emailSendTimes[req.session.index]) / 1000);
+
+            if (req.session.tempUsers.length === 0 || currentTime <= 0 || !(req.session.emails.includes(req.session.currentUser.email))) {
+                console.log(req.session.tempUsers[req.session.index]);
+                console.log(req.session.currentUser);
+
                 req.session.tempUsers.push(req.session.currentUser);
                 req.session.index = req.session.tempUsers.length - 1;
-                let currentTime = 30 - Math.floor((Date.now() - req.session.emailSendTime) / 1000);
-                if (!req.session.emailSendTime || currentTime <= 0) {
-                    req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-                    sendEmail(req.session.tempUsers[req.session.index], 'verification', req.session.OTP);
-                    req.session.emailSendTime = Date.now();
-                }
-                res.redirect(`/signup-otp/${req.session.index}`);
+                req.session.OTPs.push(Math.floor(100000 + Math.random() * 900000)); // OR  req.session.OTPs[index] = (Math.floor(100000 + Math.random() * 900000));
+                sendEmail(req.session.tempUsers[req.session.index], 'verification', req.session.OTPs[req.session.index]);
+                req.session.emailSendTimes.push(Date.now());
+                req.session.emails[req.session.index] = req.session.currentUser.email;
             }
+            res.redirect(`/signup-otp/${req.session.index}`);
         }
     } catch (err) {
         console.error(err);
@@ -108,14 +88,14 @@ const postSignup = async (req, res) => {
 const getSignupOTP = (req, res) => {
     try {
         const index = req.params.index;
-        if (req.session.OTP && req.session.invalidOTP) {
+        if (req.session.OTPs[index] && req.session.invalidOTP) {
             const message = req.session.invalidOTP;
             delete req.session.invalidOTP;
-            res.render('./common/OTP', { emailSendTime: req.session.emailSendTime, invalidOTP: message, index })
-        } else if (req.session.OTP) {
-            res.render('./common/OTP', { emailSendTime: req.session.emailSendTime, index });
+            res.render('./common/OTP', { emailSendTime: req.session.emailSendTimes[index], invalidOTP: message, index })
+        } else if (req.session.OTPs[index]) {
+            res.render('./common/OTP', { emailSendTime: req.session.emailSendTimes[index], index });
         } else {
-            res.status(500).render('./common/500', { index });
+            res.redirect('/signup');
         }
     } catch (err) {
         console.error(err);
@@ -125,12 +105,13 @@ const getSignupOTP = (req, res) => {
 
 const postSignupOTP = async (req, res) => {
     try {
-        if (req.session.OTP) {
-            if (req.session.OTP === Number(req.body.otp)) {
-                const index = req.params.index;
+        const index = req.params.index;
+        if (req.session.OTPs[index]) {
+            if (req.session.OTPs[index] === Number(req.body.otp)) {
                 req.body = req.session.tempUsers[index];
                 delete req.session.tempUsers[index];
-                delete req.session.OTP;
+                delete req.session.OTPs[index];
+                delete req.session.emailSendTimes[index];
 
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
                 req.body.password = hashedPassword;
@@ -140,7 +121,7 @@ const postSignupOTP = async (req, res) => {
                 return res.redirect('/login');
             } else {
                 req.session.invalidOTP = 'Invalid OTP. Please check your code and try again.';
-                res.redirect('/signup-otp');
+                res.redirect(`/signup-otp/${index}`);
             }
         }
     } catch (err) {
@@ -152,14 +133,13 @@ const postSignupOTP = async (req, res) => {
 const getResendOTP = (req, res) => {
     try {
         const index = parseInt(req.params.index);
-        if (index >= 0 && index < req.session.tempUsers.length) {
-            req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-            sendEmail(req.session.tempUsers[index], 'verification', req.session.OTP);
-            req.session.emailSendTime = Date.now();
+        if (req.session.tempUsers[index]) {
+            req.session.OTPs[index] = Math.floor(100000 + Math.random() * 900000);
+            sendEmail(req.session.tempUsers[index], 'verification', req.session.OTPs[index]);
+            req.session.emailSendTimes[index] = Date.now();
             res.redirect(`/signup-otp/${index}`);
         } else {
-            console.error(err);
-            res.status(500).render('./common/500');
+            res.redirect('/signup');
         }
     } catch (err) {
         console.error(err);
@@ -293,6 +273,7 @@ const getForgotPasswordEmailAsk = (req, res) => {
 
 const postForgotPasswordEmailAsk = async (req, res) => {
     try {
+        // Below logic is very perfect
         req.session.forgotUser = await userCollection.findOne({ email: req.body.emailOrPhone });
         if (!req.session.forgotUser) { // will return null if no matches found
             return res.render('./common/forgotPasswordEmailAsk', { message: 'No user associated with this email!', class: 'alert-danger' })
@@ -300,27 +281,28 @@ const postForgotPasswordEmailAsk = async (req, res) => {
             if (!req.session.forgotUsers) {
                 console.log('first time');
                 req.session.forgotUsers = [];
-                req.session.forgotUserIndex = req.session.forgotUsers.length - 1;
+                req.session.forgotOTPs = [];
+                req.session.forgotEmailSendTimes = [];
+                req.session.forgotEmails = [];
             }
 
-            let currentTime = 30 - Math.floor((Date.now() - req.session.emailSendTime) / 1000);
+            let currentTime = 30 - Math.floor((Date.now() - req.session.forgotEmailSendTimes[req.session.forgotUserIndex]) / 1000);
 
-            if (!req.session.emailSendTime || currentTime <= 0 || req.session.forgotUsers[req.session.forgotUserIndex].email !== req.session.forgotUser.email) {
-                console.log('!==');
+            if (req.session.forgotUsers.length === 0 || currentTime <= 0 || !req.session.forgotEmails.includes(req.session.forgotUser.email)){
+                console.log('!== or after 30 seconds');
+                console.log(req.session.forgotUsers[req.session.forgotUserIndex]);
                 console.log(req.session.forgotUser);
-                console.log(req.session.forgotUsers[req.session.forgotUserIndex])
+
                 req.session.forgotUsers.push(req.session.forgotUser);
                 req.session.forgotUserIndex = req.session.forgotUsers.length - 1;
 
-                req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-                sendEmail(req.session.forgotUsers[req.session.forgotUserIndex], 'resetting', req.session.OTP);
-                req.session.emailSendTime = Date.now();
+                req.session.forgotOTPs.push(Math.floor(100000 + Math.random() * 900000));
+                sendEmail(req.session.forgotUsers[req.session.forgotUserIndex], 'resetting', req.session.forgotOTPs[req.session.forgotUserIndex]);
+                req.session.forgotEmailSendTimes.push(Date.now());
+                req.session.forgotEmails[req.session.forgotUserIndex] = req.session.forgetUser.email;
             }
             res.redirect(`/forgot-password-otp/${req.session.forgotUserIndex}`);
-
         }
-
-
 
     } catch (err) {
         console.log(err);
@@ -333,14 +315,14 @@ const postForgotPasswordEmailAsk = async (req, res) => {
 const getForgotPasswordOTPAsk = (req, res) => {
     try {
         const index = req.params.index
-        if (req.session.OTP && req.session.invalidOTP) {
+        if (req.session.forgotOTPs[index] && req.session.invalidOTP) {
             const message = req.session.invalidOTP;
             delete req.session.invalidOTP;
-            res.render('./common/forgotPasswordOTPAsk', { emailSendTime: req.session.emailSendTime, invalidOTP: message, index })
-        } else if (req.session.OTP) {
-            res.render('./common/forgotPasswordOTPAsk', { emailSendTime: req.session.emailSendTime, index });
+            res.render('./common/forgotPasswordOTPAsk', { emailSendTime: req.session.forgotEmailSendTimes[index], invalidOTP: message, index })
+        } else if (req.session.forgotOTPs[index]) {
+            res.render('./common/forgotPasswordOTPAsk', { emailSendTime: req.session.forgotEmailSendTimes[index], index });
         } else {
-            res.status(500).render('./common/500');
+            res.redirect('/signup');
         }
     } catch (err) {
         console.log(err);
@@ -351,9 +333,9 @@ const getForgotPasswordOTPAsk = (req, res) => {
 const postForgotPasswordOTPAsk = (req, res) => {
     try {
         const index = req.params.index;
-        if (req.session.OTP) {
-            if (req.session.OTP === Number(req.body.otp)) {
-                delete req.session.OTP;
+        if (req.session.forgotOTPs[index]) {
+            if (req.session.forgotOTPs[index] === Number(req.body.otp)) {
+                delete req.session.forgotOTPs[index];
 
                 req.session.authentification = 'Authentification successful. Reset the password!'
                 return res.redirect(`/forgot-password-reset/${index}`);
@@ -372,11 +354,15 @@ const postForgotPasswordOTPAsk = (req, res) => {
 const getPasswordResetResendOTP = (req, res) => {
     try {
         const index = req.params.index;
-        console.log('resend otp')
-        req.session.OTP = Math.floor(100000 + Math.random() * 900000);
-        sendEmail(req.session.forgotUsers[index], 'resetting', req.session.OTP);
-        req.session.emailSendTime = Date.now();
-        res.redirect(`/forgot-password-otp/${index}`);
+        if (req.session.forgotUsers[index]) {
+            console.log('resend otp')
+            req.session.forgotOTPs[index] = Math.floor(100000 + Math.random() * 900000);
+            sendEmail(req.session.forgotUsers[index], 'resetting', req.session.forgotOTPs[index]);
+            req.session.forgotEmailSendTimes[index] = Date.now();
+            res.redirect(`/forgot-password-otp/${index}`);
+        }else{
+            res.redirect('/login');
+        }
     } catch (err) {
         console.error(err);
         res.status(500).render('./common/500');
@@ -386,13 +372,12 @@ const getPasswordResetResendOTP = (req, res) => {
 const getForgotPasswordReset = (req, res) => {
     try {
         const index = req.params.index;
-        if (req.session.authentification) {
+        if (req.session.forgotUsers[index] && req.session.authentification) {
             const text = req.session.authentification;
             delete req.session.authentification;
             res.render('./common/forgotPasswordReset', { message: text, class: 'alert-success', index });
         } else {
-            console.log(err);
-            res.status(500).render('./common/500');
+            res.render('/login');
         }
 
     } catch (err) {
@@ -407,8 +392,7 @@ const postForgotPasswordReset = async (req, res) => {
         const index = req.params.index;
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
-        // const updatedUser = await userCollection.findByIdAndUpdate(req.body._id, { password: req.body.password });
-        // OR
+        
         const updatedUser = await userCollection.updateOne({ _id: req.session.forgotUsers[index]._id }, { $set: { password: req.body.password } });
         delete req.session.forgotUsers[index];
         if (updatedUser) {
