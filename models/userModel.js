@@ -21,10 +21,19 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String, 
         required: [true, 'Set your password']
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    blocked : {
+        type: Boolean,
+        default: false
     }
+
 });
 
 // creating collection using the created schema
 const userCollection = mongoose.model('userCollection', userSchema);
 
-module.exports = userCollection; // exported to userController
+module.exports = userCollection; // exported to commonController

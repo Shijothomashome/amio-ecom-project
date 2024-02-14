@@ -1,0 +1,119 @@
+<%- include('../partials/adminHeaderAndSidebar') %>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <section class="section">
+      <div class="section-header d-flex justify-content-between ">
+        <h1>Products</h1>
+
+        <nav aria-label="breadcrumb">
+
+          <ol class="breadcrumb mt-3 ">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">products</li>
+          </ol>
+
+        </nav>
+      </div>
+
+
+      <div class="section-body">
+
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Details</h4>
+              <div class="card-header-form">
+                <form>
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <div class="input-group-btn">
+                      <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+
+                <% function formatDateTime(dateTimeString) {
+                  const date = new Date(dateTimeString);
+                  const day = ('0' + date.getDate()).slice(-2); // Get day of the month (1-31) and add leading zero
+                  const month = ('0' + (date.getMonth() + 1)).slice(-2); // Get month (0-11) and add leading zero
+                  const year = date.getFullYear(); // Get full year (e.g., 2024)
+                  const formattedDateTime = `${day}/${month}/${year}`;
+                  return formattedDateTime;
+                } %>
+                
+                
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                      <th>No.</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone No</th>
+                      <th>Status</th>
+                      <th>Added</th>
+                      <th>Actions</th>
+                    </tr>
+                
+                    <% locals.users.forEach((user, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= user.firstName %> <%= user.lastName %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.phoneNumber %></td>
+                        <td>
+                          <% if (user.blocked) { %>
+                            Blocked
+                          <% } else { %>
+                            Active
+                          <% } %>
+                        </td>
+                        <td><%= formatDateTime(user.createdAt) %></td>
+                        <td>
+                          <% if (user.blocked) { %>
+                            <form action="/admin/unblock-user/<%= user._id %>" method="post">
+                              <button type="submit" class="btn btn-success">Unblock</button>
+                            </form>
+                          <% } else { %>
+                            <form action="/admin/block-user/<%= user._id %>" method="post">
+                              <button type="submit" class="btn btn-danger">Block</button>
+                            </form>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+                
+              </div>
+            </div>
+            <div class="card-footer text-center ">
+              <nav class="d-inline-block">
+                <ul class="pagination mb-0">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+                  </li>
+                  <li class="page-item active"><a class="page-link" href="#">1 <span
+                        class="sr-only">(current)</span></a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <%- include('../partials/adminFooter') %>

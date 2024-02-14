@@ -29,9 +29,9 @@ const sendEmail = (tempUser, task, OTP) => {
         to: tempUser.email,
         subject: `Your One-Time Password for Amio Account ${task}`,
         text: `Dear ${tempUser.firstName},
-        Your Amio account ${task} code is: ${OTP}. Please use this code to complete the ${task} process.
-        Thank you,
-        Team Amio`
+                Your Amio account ${task} code is: ${OTP}. Please use this code to complete the ${task} process.
+                Thank you,
+                Team Amio`
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -154,7 +154,10 @@ const getLogin = (req, res) => {
             const text = req.session.accountCreated;
             delete req.session.accountCreated;
             res.render('./common/login', { message: text, class: 'alert-success' });
-        } else {
+        } else if (req.session.user) {
+            return res.redirect('/');
+        }
+        else {
             res.render('./common/login');
         }
     } catch (err) {
@@ -168,8 +171,11 @@ const postLogin = async (req, res) => {
         if (validator.isEmail(req.body.emailOrPhone)) {
             req.session.user = await userCollection.findOne({ email: req.body.emailOrPhone });
             if (req.session.user === null) { // will return null if no matches found
-
                 return res.render('./common/login', { message: 'No user found, Try again!', class: 'alert-danger' })
+            }
+            // Check if user is blocked
+            if (req.session.user.blocked) {
+                return res.render('./common/login', { message: 'Your account is blocked. Please contact support.', class: 'alert-danger' });
             }
             const passwordMatch = await bcrypt.compare(req.body.password, req.session.user.password);
             if (passwordMatch) {
@@ -288,7 +294,7 @@ const postForgotPasswordEmailAsk = async (req, res) => {
 
             let currentTime = 30 - Math.floor((Date.now() - req.session.forgotEmailSendTimes[req.session.forgotUserIndex]) / 1000);
 
-            if (req.session.forgotUsers.length === 0 || currentTime <= 0 || !req.session.forgotEmails.includes(req.session.forgotUser.email)){
+            if (req.session.forgotUsers.length === 0 || currentTime <= 0 || !req.session.forgotEmails.includes(req.session.forgotUser.email)) {
                 console.log('!== or after 30 seconds');
                 console.log(req.session.forgotUsers[req.session.forgotUserIndex]);
                 console.log(req.session.forgotUser);
@@ -360,7 +366,7 @@ const getPasswordResetResendOTP = (req, res) => {
             sendEmail(req.session.forgotUsers[index], 'resetting', req.session.forgotOTPs[index]);
             req.session.forgotEmailSendTimes[index] = Date.now();
             res.redirect(`/forgot-password-otp/${index}`);
-        }else{
+        } else {
             res.redirect('/login');
         }
     } catch (err) {
@@ -392,7 +398,7 @@ const postForgotPasswordReset = async (req, res) => {
         const index = req.params.index;
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
-        
+
         const updatedUser = await userCollection.updateOne({ _id: req.session.forgotUsers[index]._id }, { $set: { password: req.body.password } });
         delete req.session.forgotUsers[index];
         if (updatedUser) {

@@ -1,0 +1,31 @@
+
+<%- include('../partials/adminHeaderAndSidebar') %>
+
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header position-relative ">
+            <h1>Blank Page</h1>
+          </div>
+          <% if(locals.message) { %>
+            <label id="alert-success" class="alert <%= locals.class %> position-absolute rounded p-2  " style="top:0; left: 0 !important; right: 0 !important; text-align: center;"><%= locals.message %></label>
+            <script>
+                document.addEventListener('DOMContentLoaded',() => {
+                    // hide the success alert after 6 seconds
+                    setTimeout(()=>{
+                        const alertSuccess = document.getElementById('alert-success');
+                        if(alertSuccess){
+                            alertSuccess.style.display = 'none'
+                        }
+                    },6000)
+                })
+            </script>
+        <% } %>
+
+          <div class="section-body">
+          </div>
+        </section>
+      </div>
+      
+      <%- include('../partials/adminFooter') %>

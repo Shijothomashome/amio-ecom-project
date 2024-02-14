@@ -16,7 +16,7 @@
                     <label id="alert-success" class="alert <%= locals.class %> position-absolute rounded p-2  " style="top:0; left: 0 !important; right: 0 !important; text-align: center;"><%= locals.message %></label>
                     <script>
                         document.addEventListener('DOMContentLoaded',() => {
-                            // hide the success alert after 3 seconds
+                            // hide the success alert after 6 seconds
                             setTimeout(()=>{
                                 const alertSuccess = document.getElementById('alert-success');
                                 if(alertSuccess){
@@ -39,7 +39,7 @@
                                     <form action="/login" method="post">
                                         <div class="form-group">
                                             <label for="singin-email">Email address *</label>
-                                            <input type="text" class="form-control email" id="singin-email" name="emailOrPhone" value="<%= locals.emailOrPhone %>" required>
+                                            <input type="text" class="form-control email" id="singin-email" name="emailOrPhone" value="<%= locals.emailOrPhone %>" required autofocus>
                                             <label class="d-none email-label text-danger" style="font-weight:500; font-size: 12px; margin: 0;" ></label>
                                         </div><!-- End .form-group -->
         

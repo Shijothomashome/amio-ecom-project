@@ -25,4 +25,6 @@ router.get('/contact',commonControllers.getContacts);
 router.get('/FAQs',commonControllers.getFAQs);
 router.get('/cart',commonControllers.getCart);
 
+
+
 module.exports = router;

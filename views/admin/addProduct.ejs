@@ -1,0 +1,144 @@
+<%- include('../partials/adminHeaderAndSidebar') %>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <section class="section">
+      <div class="section-header">
+        <h1>Add Products</h1>
+      </div>
+
+      <div class="section-body">
+
+        <div class="col-md-10">
+          <div class="card">
+
+            <form action="/admin/add-product" method="post" enctype="multipart/form-data"class="needs-validation" novalidate>
+              <div class="card">
+                <div class="card-header">
+                  <h4>General Information</h4>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="product-name">Product Name</label>
+                    <input id="product-name" type="text" class="form-control" name="name" required>
+                    <div class="invalid-feedback">Please provide a product name.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" required></textarea>
+                    <div class="invalid-feedback">Please provide a description.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="price">Price</label>
+                    <input id="price" type="number" class="form-control" name="price" required>
+                    <div class="invalid-feedback">Please provide a price.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="form-control" required>
+                      <option value="">category 1</option>
+                        <% locals.categories.forEach(category => { %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% }); %>
+                    </select>
+                    <div class="invalid-feedback">Please select a category.</div>
+                </div>
+
+                  <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <select id="brand" name="brand" class="form-control" required>
+                      <option value="">Brand 1</option>
+                      <% locals.brands.forEach(brand => { %>
+                        <option value="<%= brand._id %>"><%= brand.name %></option>
+                    <% }); %>
+                    </select>
+                    <div class="invalid-feedback">Please select a brand.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="mainImage">Main Image</label>
+                    <div id="image-preview" class="image-preview">
+                      <label for="main-image-upload" class="image-label bg-body-secondary ">Choose File</label>
+                      <input type="file" name="mainImage" id="main-image-upload" class="form-control-file"
+                        accept="image/*" onchange="previewImage(event)" required>
+                      <img id="main-image-preview" src="#" alt="Main Image Preview"
+                        style="display: none; max-width: 100%; max-height: 200px;">
+                        <div class="invalid-feedback">Please choose a main image.</div>
+                    </div>
+                  </div>
+
+                  <script>
+                    function previewImage(event) {
+                      const reader = new FileReader();
+                      const image = document.getElementById('main-image-preview');
+                      reader.onload = function () {
+                        image.src = reader.result;
+                        image.style.display = 'block';
+                      };
+                      reader.readAsDataURL(event.target.files[0]);
+                    }
+                  </script>
+
+
+
+                  <div class="form-group">
+                    <label for="subImages">Sub Images</label>
+                    <div id="sub-images-preview" class="image-preview">
+                      <label for="sub-image-upload" class="image-label">Choose Files</label>
+                      <input type="file" name="subImages" id="sub-image-upload" class="form-control-file"
+                        accept="image/*" multiple onchange="previewSubImages(event)" required>
+                      <!-- Sub images preview container -->
+                      <div id="sub-images-container" style="display: grid; grid-template-columns: 1fr 1fr;">
+                        <!-- Sub images will be displayed here -->
+                      </div>
+                      <div class="invalid-feedback">Please choose sub images.</div>
+                    </div>
+                  </div>
+
+                  <script>
+                    function previewSubImages(event) {
+                      const subImagesContainer = document.getElementById('sub-images-container');
+                      subImagesContainer.innerHTML = ''; // Clear previous previews
+
+                      // Loop through each selected file
+                      for (let i = 0; i < event.target.files.length; i++) {
+                        const reader = new FileReader();
+                        const subImage = document.createElement('img');
+                        subImage.className = 'sub-image-preview img-fluid';
+                        
+                        reader.onload = function () {
+                          subImage.src = reader.result;
+                        };
+                        reader.readAsDataURL(event.target.files[i]);
+                        subImagesContainer.appendChild(subImage);
+                      }
+                    }
+                  </script>
+
+
+                  <div class="form-group">
+                    <label for="stockQuantity">Stock Quantity</label>
+                    <input id="stockQuantity" type="number" class="form-control" name="stockQuantity" required>
+                    <div class="invalid-feedback">Please provide stock quantity.</div>
+                  </div>
+
+
+                </div>
+                <div class="card-footer text-right">
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <%- include('../partials/adminFooter') %>

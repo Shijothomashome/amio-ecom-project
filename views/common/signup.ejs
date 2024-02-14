@@ -38,7 +38,7 @@
                                                 <label for="register-firstName">Your firstname *</label>
                                                 <input type="text" class="form-control signup-input"
                                                     id="register-firstName" name="firstName"
-                                                    value="<%= locals.firstName %>">
+                                                    value="<%= locals.firstName %>" autofocus>
                                                 <label class="error-label d-none text-danger"
                                                     style="font-weight:500; font-size: 12px; margin: 0;"></label>
                                             </div><!-- End .form-group -->
@@ -240,7 +240,6 @@
                                                             password_security_label.classList.remove('d-none');
                                                             password.style.setProperty('border-color', '#4BB543', 'important');
 
-
                                                         }
 
                                                         evaluatePasswordStrength();
@@ -254,9 +253,6 @@
                                                     }
                                                 }
                                             });
-
-
-
 
                                             // Passwords match or not [from password.addEventListener to repassword label]
                                             // For dynamically checking and displaying error of password mismatch from the password field to repassword error label
